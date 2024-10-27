@@ -4,12 +4,13 @@ import streamlit as st
 # Fungsi untuk memuat model
 def load_model(model_path):
     try:
-        return pickle.load(open(model_path, 'rb'))
+        with open(model_path, 'rb') as model_file:
+            return pickle.load(model_file)
     except FileNotFoundError:
         st.error("Model file not found. Please check the path.")
         return None
     except Exception as e:
-        st.error(f"Terjadi kesalahan: {str(e)}")
+        st.error(f"Terjadi kesalahan saat memuat model: {str(e)}")
         return None
 
 # Load the saved model
@@ -80,13 +81,10 @@ if model is not None:
             heart_prediction = model.predict([input_data])
 
             # Determine the prediction result
-            if heart_prediction[0] == 0:
-                heart_diagnosis = 'Pasien Tidak Terkena Penyakit Jantung'
-            else:
-                heart_diagnosis = 'Pasien Terkena Penyakit Jantung'
+            heart_diagnosis = 'Pasien Terkena Penyakit Jantung' if heart_prediction[0] == 1 else 'Pasien Tidak Terkena Penyakit Jantung'
 
             # Display result
             st.success(heart_diagnosis)
 
         except Exception as e:
-            st.error(f"Terjadi kesalahan: {str(e)}")
+            st.error(f"Terjadi kesalahan saat memprediksi: {str(e)}")
