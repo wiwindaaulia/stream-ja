@@ -1,7 +1,8 @@
-numpy
-pandas
+numpy==1.26.4
+pandas==2.2.2
 streamlit
 pickle
-pip
-scikit-learn
+pip==24.2
 sklearn
+scikit-learn
+joblib
