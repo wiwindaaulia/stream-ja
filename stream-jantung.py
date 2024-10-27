@@ -5,7 +5,7 @@ import streamlit as st
 # Load model yang telah disimpan
 try:
     print("Mencoba memuat model...")
-    model = pickle.load(open('/mnt/data/penyakit_jantung.sav', 'rb'))  # Perbarui dengan path absolut
+    model = pickle.load(open('penyakit_jantung.sav', 'rb'))  
     print("Model berhasil dimuat.")
 except FileNotFoundError:
     print("Error: File penyakit_jantung.sav tidak ditemukan.")
