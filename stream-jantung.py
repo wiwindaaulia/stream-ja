@@ -38,7 +38,7 @@ if model is not None:
         age = st.text_input('Umur', '0')
 
     with col2:
-        sex = st.selectbox('Jenis Kelamin', ('0', '1'))  # 0 untuk Female, 1 untuk Male
+        sex = st.selectbox('Jenis Kelamin', ('0', '1'))  # 0 untuk Perempuan, 1 untuk Laki-laki
 
     with col3:
         cp = st.selectbox('Jenis Nyeri Dada', ('0', '1', '2', '3'))
@@ -50,7 +50,7 @@ if model is not None:
         chol = st.text_input('Nilai Kolesterol', '0')
 
     with col3:
-        fbs = st.selectbox('Gula Darah > 120 mg/dl', ('0', '1'))  # 1 jika True, 0 jika False
+        fbs = st.selectbox('Gula Darah > 120 mg/dl', ('0', '1'))  # 1 jika benar, 0 jika salah
 
     with col1:
         restecg = st.selectbox('Hasil Elektrokardiografi', ('0', '1', '2'))
@@ -59,7 +59,7 @@ if model is not None:
         thalach = st.text_input('Detak Jantung Maksimum', '0')
 
     with col3:
-        exang = st.selectbox('Induksi Angina', ('0', '1'))  # 1 jika True, 0 jika False
+        exang = st.selectbox('Induksi Angina', ('0', '1'))  # 1 jika benar, 0 jika salah
 
     with col1:
         oldpeak = st.text_input('ST Depression', '0')
