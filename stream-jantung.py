@@ -1,20 +1,22 @@
+
 import pickle
 import numpy as np
 import streamlit as st
 
 # Load model yang telah disimpan
-model = None
 try:
     print("Mencoba memuat model...")
-    with open('penyakit_jantung.sav', 'rb') as model_file:
-        model = pickle.load(model_file)
-    st.success("Model berhasil dimuat.")
+    model = pickle.load(open('penyakit_jantung.sav', 'rb'))
+    print("Model berhasil dimuat.")
 except FileNotFoundError:
-    st.error("Error: File 'penyakit_jantung.sav' tidak ditemukan. Pastikan file ini berada di direktori yang benar.")
+    print("Error: File penyakit_jantung.sav tidak ditemukan.")
+    model = None
 except ModuleNotFoundError as e:
-    st.error(f"Error: Modul yang dibutuhkan hilang - {e}. Pastikan Anda telah menginstal semua dependensi yang diperlukan di 'requirements.txt'.")
+    print(f"Error: Modul yang dibutuhkan hilang - {e}")
+    model = None
 except Exception as e:
-    st.error(f"Kesalahan tak terduga saat memuat model: {e}")
+    print(f"Error lain: {e}")
+    model = None
 
 # Judul web
 st.title('Prediksi Penyakit Jantung')
@@ -66,7 +68,8 @@ heart_diagnosis = ''
 
 # Tombol untuk melakukan prediksi
 if st.button('Prediksi Penyakit Jantung'):
-    if model is not None:  # Pastikan model berhasil dimuat
+    # Cek apakah model sudah berhasil dimuat
+    if model is not None:
         try:
             # Mengonversi input ke tipe float
             input_data = [
@@ -89,7 +92,5 @@ if st.button('Prediksi Penyakit Jantung'):
 
         except ValueError:
             st.error("Masukkan semua nilai dengan benar dalam format numerik.")
-        except Exception as e:
-            st.error(f"Terjadi kesalahan saat memprediksi: {str(e)}")
     else:
-        st.error("Model belum berhasil dimuat. Coba lagi.")
+        st.error("Model gagal dimuat. Pastikan file model tersedia dan kompatibel.")
