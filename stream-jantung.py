@@ -2,20 +2,26 @@ import pickle
 import numpy as np
 import streamlit as st
 
-# Load model yang telah disimpan
-try:
-    print("Mencoba memuat model...")
-    model = pickle.load(open('penyakit_jantung.sav', 'rb'))  
-    print("Model berhasil dimuat.")
-except FileNotFoundError:
-    print("Error: File penyakit_jantung.sav tidak ditemukan.")
-    model = None
-except ModuleNotFoundError as e:
-    print(f"Error: Modul yang dibutuhkan hilang - {e}")
-    model = None
-except Exception as e:
-    print(f"Error lain: {e}")
-    model = None
+# Fungsi untuk memuat model dengan caching
+@st.cache(allow_output_mutation=True)
+def load_model():
+    try:
+        with open('./penyakit_jantung.sav', 'rb') as file:
+            model = pickle.load(file)
+            st.write("Model berhasil dimuat.")  # Pesan debug untuk memastikan model berhasil dimuat
+        return model
+    except FileNotFoundError:
+        st.error("Error: File penyakit_jantung.sav tidak ditemukan.")
+        return None
+    except ModuleNotFoundError as e:
+        st.error(f"Error: Modul yang dibutuhkan hilang - {e}")
+        return None
+    except Exception as e:
+        st.error(f"Error lain saat memuat model: {e}")
+        return None
+
+# Memuat model
+model = load_model()
 
 # Judul web
 st.title('Prediksi Penyakit Jantung')
