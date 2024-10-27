@@ -1,90 +1,89 @@
 import pickle
+import numpy as np
 import streamlit as st
 
-# Fungsi untuk memuat model
-def load_model(model_path):
-    try:
-        with open(model_path, 'rb') as model_file:
-            return pickle.load(model_file)
-    except FileNotFoundError:
-        st.error("Model file not found. Please check the path.")
-        return None
-    except Exception as e:
-        st.error(f"Terjadi kesalahan saat memuat model: {str(e)}")
-        return None
+# Load model yang telah disimpan
+try:
+    print("Mencoba memuat model...")
+    model = pickle.load(open('penyakit_jantung.sav', 'rb'))
+    print("Model berhasil dimuat.")
+except FileNotFoundError:
+    print("Error: File penyakit_jantung.sav tidak ditemukan.")
+except ModuleNotFoundError as e:
+    print(f"Error: Modul yang dibutuhkan hilang - {e}")
+except Exception as e:
+    print(f"Error lain: {e}")
 
-# Load the saved model
-model = load_model('penyakit_jantung.sav')
 
-# Web title
+# Judul web
 st.title('Prediksi Penyakit Jantung')
 
-# Input fields
-if model is not None:
-    col1, col2, col3 = st.columns(3)
+# Membuat kolom untuk input data
+col1, col2, col3 = st.columns(3)
 
-    with col1:
-        age = st.number_input('Umur', min_value=0, max_value=120, step=1)
+with col1:
+    age = st.text_input('Umur', '0')
 
-    with col2:
-        sex = st.selectbox('Jenis Kelamin', options=[0, 1], format_func=lambda x: 'Perempuan' if x == 0 else 'Laki-laki')
+with col2:
+    sex = st.selectbox('Jenis Kelamin', ('0', '1'))  # 0 untuk Female, 1 untuk Male
 
-    with col3:
-        cp = st.selectbox('Jenis Nyeri Dada', options=[0, 1, 2, 3], 
-                          format_func=lambda x: {0: 'Tanpa Nyeri', 1: 'Nyeri Ringan', 2: 'Nyeri Sedang', 3: 'Nyeri Berat'}[x])
+with col3:
+    cp = st.selectbox('Jenis Nyeri Dada', ('0', '1', '2', '3'))
 
-    with col1:
-        trestbps = st.number_input('Tekanan Darah', min_value=0)
+with col1:
+    trestbps = st.text_input('Tekanan Darah', '0')
 
-    with col2:
-        chol = st.number_input('Nilai Kolesterol', min_value=0)
+with col2:
+    chol = st.text_input('Nilai Kolesterol', '0')
 
-    with col3:
-        fbs = st.selectbox('Gula Darah', options=[0, 1], format_func=lambda x: 'Normal' if x == 0 else 'Diabetes')
+with col3:
+    fbs = st.selectbox('Gula Darah > 120 mg/dl', ('0', '1'))  # 1 jika True, 0 jika False
 
-    with col1:
-        restecg = st.selectbox('Hasil Elektrokardiografi', options=[0, 1, 2])
+with col1:
+    restecg = st.selectbox('Hasil Elektrokardiografi', ('0', '1', '2'))
 
-    with col2:
-        thalach = st.number_input('Detak Jantung Maksimum', min_value=0)
+with col2:
+    thalach = st.text_input('Detak Jantung Maksimum', '0')
 
-    with col3:
-        exang = st.selectbox('Induksi Angina', options=[0, 1])
+with col3:
+    exang = st.selectbox('Induksi Angina', ('0', '1'))  # 1 jika True, 0 jika False
 
-    with col1:
-        oldpeak = st.number_input('ST Depression', min_value=0.0)
+with col1:
+    oldpeak = st.text_input('ST Depression', '0')
 
-    with col2:
-        slope = st.selectbox('Slope', options=[0, 1, 2])
+with col2:
+    slope = st.selectbox('Slope', ('0', '1', '2'))
 
-    with col3:
-        ca = st.number_input('Nilai CA', min_value=0, max_value=4)
+with col3:
+    ca = st.selectbox('Nilai CA', ('0', '1', '2', '3', '4'))
 
-    with col1:
-        thal = st.selectbox('Nilai Thal', options=[1, 2, 3, 6, 7], 
-                             format_func=lambda x: {1: 'Normal', 2: 'Dari Akhir', 3: 'Defisiensi', 6: 'Fixed Defect', 7: 'Reversible Defect'}[x])
+with col1:
+    thal = st.selectbox('Nilai Thal', ('0', '1', '2', '3'))
 
-    # Variable for prediction result
-    heart_diagnosis = ''
+# Variabel untuk menampilkan hasil prediksi
+heart_diagnosis = ''
 
-    # Button to make predictions
-    if st.button('Prediksi Penyakit Jantung'):
-        try:
-            # Prepare input data
-            input_data = [
-                age, sex, cp, trestbps, chol, 
-                fbs, restecg, thalach, exang, 
-                oldpeak, slope, ca, thal
-            ]
+# Tombol untuk melakukan prediksi
+if st.button('Prediksi Penyakit Jantung'):
+    try:
+        # Mengonversi input ke tipe float
+        input_data = [
+            float(age), float(sex), float(cp), float(trestbps), float(chol), 
+            float(fbs), float(restecg), float(thalach), float(exang), 
+            float(oldpeak), float(slope), float(ca), float(thal)
+        ]
 
-            # Make prediction
-            heart_prediction = model.predict([input_data])
+        # Melakukan prediksi
+        heart_prediction = model.predict([input_data])
 
-            # Determine the prediction result
-            heart_diagnosis = 'Pasien Terkena Penyakit Jantung' if heart_prediction[0] == 1 else 'Pasien Tidak Terkena Penyakit Jantung'
+        # Menentukan hasil prediksi
+        if heart_prediction[0] == 0:
+            heart_diagnosis = 'Pasien Tidak Terkena Penyakit Jantung'
+        else:
+            heart_diagnosis = 'Pasien Terkena Penyakit Jantung'
 
-            # Display result
-            st.success(heart_diagnosis)
+        # Menampilkan hasil
+        st.success(heart_diagnosis)
 
-        except Exception as e:
-            st.error(f"Terjadi kesalahan saat memprediksi: {str(e)}")
+    except ValueError:
+        st.error("Masukkan semua nilai dengan benar dalam format numerik.")
