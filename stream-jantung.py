@@ -3,6 +3,9 @@ import pickle
 import numpy as np
 import streamlit as st
 
+# Instal scikit-learn jika belum terinstal
+os.system("pip install scikit-learn")
+
 # Path absolut untuk file model
 model_path = os.path.join(os.getcwd(), 'penyakit_jantung.sav')
 
