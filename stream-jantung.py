@@ -1,13 +1,12 @@
 import os
 import pickle
-import numpy as np
 import streamlit as st
 
 # Path absolut untuk file model
 model_path = os.path.join(os.getcwd(), 'penyakit_jantung.sav')
 
 # Fungsi untuk memuat model dengan caching
-@st.cache(allow_output_mutation=True)
+@st.cache_data
 def load_model():
     try:
         with open(model_path, 'rb') as file:
